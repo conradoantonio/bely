@@ -388,29 +388,6 @@ class dataAppController extends Controller
      *=                                     Empiezan las funciones relacionadas a la api de conekta                                     =
      *===================================================================================================================================
      */
-    
-    /**
-     * Genera un token
-     *
-     * @param  Request $request
-     * @return $nombre_foto si la imagen fue subida exitosamente, 0 si hubo algún error subiendo la imagen.
-     */
-    public function generar_token(Request $request)
-    {
-        return $request->conektaTokenId;
-    }
-
-    /**
-     * Carga el formulario de prueba para conekta.
-     *
-     * @param  Request $request
-     * @return $nombre_foto si la imagen fue subida exitosamente, 0 si hubo algún error subiendo la imagen.
-     */
-    public function cargar_form_conekta()
-    {
-        $title = $menu = 'Pedidos';
-        return view('pruebas_conekta.form_prueba', ['menu' => $menu, 'title' => $title]);
-    }
 
     /**
      * Busca si existe un usuario con un customer_id_conekta en la base de datos, si lo encuentra actualiza su método de pago
@@ -1092,5 +1069,59 @@ class dataAppController extends Controller
             ->subject($subject)
             ->setBody($msg, 'text/html'); // for HTML rich messages
         });
+    }
+
+    /**
+     * Actualiza el player_id de un usuario
+     * 
+     * @return json
+     */
+    public function actualizar_player_id(Request $req)
+    {
+        $user = usuariosModel::find($req->usuario_id);
+        $user->player_id = $req->player_id;
+        $user->save();
+
+        return response(['msg' => 'Player ID modificado con éxito'], 200);
+    }
+
+    /**
+    * Envía una notificación individual a un usuario que puede ser repartidor o cliente
+    * @return $response
+    */
+    public function enviar_notificacion_individual($title, $mensaje, $data, $player_ids)
+    {
+        $content = array(
+            "en" => $mensaje
+        );
+        $header = array(
+            "en" => $title
+        );
+        
+        $fields = array(
+            'app_id' => $this->app_id,
+            'include_player_ids' => $player_ids,
+            'data' => $data,
+            'headings' => $header,
+            'contents' => $content,
+            'small_icon' => $this->small_icon,
+            'large_icon' => $this->regular_icon
+        );
+        
+        
+        $fields = json_encode($fields);
+ 
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+                                                   "Authorization: Basic $this->app_key"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
     }
 }

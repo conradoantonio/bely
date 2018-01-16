@@ -82,9 +82,6 @@ Route::get('/configuracion/info_empresa','configuracionController@info_empresa')
 Route::post('/configuracion/info_empresa/guardar','configuracionController@guardar_info_empresa');//Guarda la información de la empresa.
 Route::post('/configuracion/info_empresa/editar','configuracionController@editar_info_empresa');//Edita la información de la empresa.
 
-/*-- Ruta para iframe --*/
-Route::get('/notificaciones_app','ionicController@index');//Carga el login de ionic
-
 /*-- Rutas para la pestaña cargar imagenes --*/
 Route::get('/cargar_imagenes','imagenController@index');//Carga el formulario de dropzone para cargar imagenes
 Route::post('/subir_imagenes','imagenController@subir_imagenes');//Carga las imágenes al servidor
@@ -131,6 +128,14 @@ Route::post('/app/generar_cotizacion','dataAppController@guardar_cotizacion');//
 Route::post('/app/obtener_cotizaciones_usuario','dataAppController@obtener_cotizaciones_usuario');//Obtiene las cotizaciones de un usuario.
 Route::post('/app/enviar_correo_detalle_orden','dataAppController@enviar_correo_detalle_orden');//Envía un correo electrónico con los detalles de la orden.
 Route::post('/app/enviar_correo_detalle_cotizacion','dataAppController@enviar_correo_detalle_cotizacion');//Envía un correo electrónico con los detalles de la cotización.
+Route::post('/app/actualizar_player_id','dataAppController@actualizar_player_id');//Actualiza el player id de un usuario de la aplicación
+
+/*-- Rutas para las notificaciones --*/
+Route::group(['prefix' => 'notificaciones_app', 'middleware' => 'auth'], function () {
+	Route::get('/','NotificacionesController@index');//Carga el panel para mandar notificaciones a la aplicación.
+	Route::post('/enviar/general','NotificacionesController@enviar_notificacion_general');//Manda una notificación a todos los usuarios suscritos de la aplicación.
+	Route::post('/enviar/individual','NotificacionesController@enviar_notificacion_individual');//Manda una notificación a los usuarios seleccionados de la áplicación.
+});
 
 Route::post('/app/webhook', function()
 {

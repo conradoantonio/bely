@@ -6,17 +6,21 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title></title>
+    
     <link rel="stylesheet" href="{{ asset('plugins/pace/pace-theme-flash.css')}}"  type="text/css" media="screen"/>
     <link rel="stylesheet" href="{{ asset('plugins/jquery-scrollbar/jquery.scrollbar.css')}}"  type="text/css"/>
     <link rel="stylesheet" href="{{ asset('plugins/boostrapv3/css/bootstrap.min.css')}}"  type="text/css"/>
     <link rel="stylesheet" href="{{ asset('plugins/boostrapv3/css/bootstrap-theme.min.css')}}"  type="text/css"/>
     <link rel="stylesheet" href="{{ asset('plugins/font-awesome/css/font-awesome.css')}}"  type="text/css"/>
+    <link rel="stylesheet" href="{{ asset('plugins/bootstrap-select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/animate.min.css')}}"  type="text/css"/>
     <link rel="stylesheet" href="{{ asset('css/style.css')}}" type="text/css"/>
     <link rel="stylesheet" href="{{ asset('css/responsive.css')}}" type="text/css"/>
     <link rel="stylesheet" href="{{ asset('css/custom-icon-set.css')}}" type="text/css"/>
-    <link rel="stylesheet" href="{{ asset('css/select2.min.css')}}" type="text/css"/>
+    {{-- <link rel="stylesheet" href="{{ asset('css/select2.min.css')}}" type="text/css"/> --}}
+    <link rel="stylesheet" href="{{ asset('plugins/bootstrap-datepicker/css/datepicker.css')}}"  type="text/css"/>
     <link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}">
     <link rel="stylesheet" href="{{ asset('css/lightbox.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
@@ -187,9 +191,9 @@
                 <!-- END SINGLE LINK -->
 
                 <!-- BEGIN SINGLE LINK -->
-                <li class="{{$menu == 'Ionic' ? 'active' : ''}}">
-                    <a href="<?php echo url();?>/notificaciones_app">
-                        <i class="fa fa-mobile"></i>
+                <li class="{{$menu == 'Notificaciones App' ? 'active' : ''}}">
+                    <a href="{{url('notificaciones_app')}}">
+                        <i class="fa fa-bell"></i>
                         <span class="title">Notificaciones app</span>
                     </a>
                 </li>
@@ -212,8 +216,6 @@
                     </a>
                 </li>
                 <!-- END SINGLE LINK -->
-
-                
 
                 <!-- BEGIN ONE LEVEL MENU -->
                 <li class="{{$menu == 'Usuarios' ? 'open start' : ''}}">
@@ -384,6 +386,7 @@
         <script src="{{ asset('plugins/jquery-numberAnimate/jquery.animateNumbers.js') }}" type="text/javascript"></script>
         <script src="{{ asset('js/select2.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('js/chart.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}" type='text/javascript'></script>
         <!-- END PAGE LEVEL PLUGINS -->     
 
         <!-- BEGIN CORE TEMPLATE JS --> 
@@ -407,6 +410,14 @@
 
 
     <script type="text/javascript">
+        $( document ).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        });
+
     $('#change-pass, #cambiar_foto_usuario_sistema').on('hidden.bs.modal', function (e) {
         $('#change-pass div.form-group').removeClass('has-error');
         $('input.form-control').val('');
