@@ -24,6 +24,7 @@
 							        <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
 							        <strong>Nota: </strong><br>
 							        - Complete los campos llamados fecha y hora para programar el momento en que debe enviarse la notificación.<br>
+							        - La hora de envío debe de estar en formato de 24 hrs.<br>
 							        - No se pueden programar notificaciones para ser enviadas en fechas u horarios que ya pasaron.<br>
 							        - En caso de querer envíar la notificación inmediatamente, deje los campos de fecha y hora vacíos.<br>
 							        - Las notificaciones no pueden ser canceladas una vez sean programadas.<br>
@@ -39,7 +40,7 @@
 						        <div class="tab-content">
 						            <div class="tab-pane active" id="tabNotGen">
 				                        <form id="form_notificaciones_generales" action="{{url('notificaciones_app/enviar/general')}}" onsubmit="return false" method="POST" autocomplete="off">
-										    {{-- <input type="hidden" name="_token" id="token" value="{!! csrf_token() !!}"> --}}
+										    <input type="hidden" name="_token" id="token" value="{!! csrf_token() !!}">
 									        <div class="row">
 									        	<div class="col-sm-12 col-xs-12 hide">
 									                <div class="form-group">
@@ -80,7 +81,7 @@
 						            </div>
 						            <div class="tab-pane" id="tabNotInd">
 				                        <form id="form_notificaciones_individuales" action="{{url('notificaciones_app/enviar/individual')}}" onsubmit="return false" method="POST" autocomplete="off">
-										    {{-- <input type="hidden" name="_token" id="token" value="{!! csrf_token() !!}"> --}}
+										    <input type="hidden" name="_token" id="token" value="{!! csrf_token() !!}">
 			                    			<div class="row">
 			                    				<div class="col-sm-12 col-xs-12 hide">
 									                <div class="form-group">
@@ -162,6 +163,7 @@
 	    
 	    $( "#fecha_general, #fecha_individual" ).datepicker({
 	        autoclose: true,
+	        language: 'es',
 	        todayHighlight: true,
 	        format: "yyyy-mm-dd",
 	    });

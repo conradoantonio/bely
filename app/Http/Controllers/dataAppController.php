@@ -225,12 +225,22 @@ class dataAppController extends Controller
      */
     public function producto_por_empresa($empresa_id)
     {
+        $select = "producto.id as producto_id, producto.codigo, producto.sku, producto.nombre, producto.precio, producto.stock,
+            producto.descripcion, IF(producto.oferta=1,'si', 'no') AS oferta, producto.foto_producto,
+            empresa.nombre AS 'empresa', categoria.categoria, subcategoria.subcategoria";
+
+        $descuento = DB::table('preferencias_envio')->orderBy('id', 'desc')->where('empresa_id', $empresa_id)->first();
+        if ($descuento) {//Si hay descuento aplicable en la empresa
+            if ($descuento->descuento_activo == 1) {
+                $discount = $descuento->descuento_porcentaje;
+                $select = $select.", ROUND((producto.precio) - ((producto.precio * $discount) /100), 2) AS precio_descuento";
+            }
+        }
+
         $categorias = Producto::categorias_empresa($empresa_id);
         foreach ($categorias as $categoria) {
             $productos = DB::table('producto')
-            ->select(DB::raw("producto.id as producto_id, producto.codigo, producto.sku, producto.nombre, producto.precio, producto.stock,
-            producto.descripcion, IF(producto.oferta=1,'si', 'no') AS oferta, producto.foto_producto,
-            empresa.`nombre` AS 'empresa', categoria.`categoria`, subcategoria.`subcategoria`"))
+            ->select(DB::raw($select))
             ->leftJoin('empresa', 'producto.empresa_id', '=', 'empresa.id')
             ->leftJoin('categoria', 'producto.categoria_id', '=', 'categoria.id')
             ->leftJoin('subcategoria', 'producto.subcategoria_id', '=', 'subcategoria.id')
@@ -255,16 +265,26 @@ class dataAppController extends Controller
      */
     public function productos_oferta($empresa_id)
     {
+        $select = "producto.id as producto_id, producto.codigo, producto.sku, producto.nombre, producto.precio, 
+            producto.stock, producto.descripcion, producto.oferta, producto.foto_producto, 
+            empresa.nombre AS 'empresa', categoria.categoria, subcategoria.subcategoria";
+            
+        $descuento = DB::table('preferencias_envio')->orderBy('id', 'desc')->where('empresa_id', $empresa_id)->first();
+        if ($descuento) {//Si hay descuento aplicable en la empresa
+            if ($descuento->descuento_activo == 1) {
+                $discount = $descuento->descuento_porcentaje;
+                $select = $select.", ROUND((producto.precio) - ((producto.precio * $discount) /100), 2) AS precio_descuento";
+            }
+        }
+
         $categorias = DB::table('categoria')->where('empresa_id', $empresa_id)->get();
         foreach ($categorias as $categoria) {
             $productos = DB::table('producto')
-            ->select(DB::raw("producto.id as producto_id, producto.codigo, producto.sku, producto.nombre, producto.precio, 
-            producto.stock, producto.descripcion, producto.oferta, producto.foto_producto, 
-            empresa.nombre AS 'empresa', categoria.categoria, subcategoria.subcategoria"))
+            ->select(DB::raw($select))
             ->leftJoin('empresa', 'producto.empresa_id', '=', 'empresa.id')
             ->leftJoin('categoria', 'producto.categoria_id', '=', 'categoria.id')
             ->leftJoin('subcategoria', 'producto.subcategoria_id', '=', 'subcategoria.id')
-            ->where('producto.empresa_id', '=', $categoria->empresa_id)
+            ->where('producto.empresa_id', '=', $empresa_id)
             ->where('producto.categoria_id', '=', $categoria->id)
             ->where('oferta', 1)
             ->where('producto.stock', '>', 0)

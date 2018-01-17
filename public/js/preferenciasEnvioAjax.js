@@ -82,3 +82,33 @@ function cambiarTarifaEnvio(tarifa,empresa,token) {
         }
     });
 }
+
+function cambiarPorcentajeDescuento(activa,empresa,porcentaje,token) {
+    url = base_url.concat('/configuracion/preferencias/cambiar_descuento_productos');
+    $.ajax({
+        method: "POST",
+        url: url,
+        data:{
+            "descuento_activo":activa,
+            "empresa_id":empresa,
+            "descuento_porcentaje":porcentaje,
+            "_token":token
+        },
+        success: function() {
+            swal({
+                title: "Bien",
+                text: "Se ha actualizado la información de descuento de forma correcta.",
+                type: "success",
+                showLoaderOnConfirm: false,
+                timer: 2000
+            });
+        },
+        error: function(xhr, status, error) {
+            swal({
+                title: "<small>¡Error!</small>",
+                text: "Ocurrió un problema cambiando la tarifa de envío, por favor trate nuevamente.<br><span style='color:#F8BB86'>\nError: " + xhr.status + " (" + error + ") "+"</span>",
+                html: true
+            });
+        }
+    });
+}

@@ -211,6 +211,30 @@ class configuracionController extends Controller
         return ['success'=>'false'];
     }
 
+    /**
+     * Actualiza la información sobre el porcentaje de descuento de los productos
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cambiar_descuento_productos(Request $request)
+    {
+        if ($request->has('descuento_porcentaje')) {
+            $registro = DB::table('preferencias_envio')->orderBy('id', 'desc')->where('empresa_id', $request->empresa_id)->first();
+            if (count($registro) == 0) {
+                DB::table('preferencias_envio')
+                ->insert(['descuento_activo' => $request->descuento_activo, 'empresa_id' => $request->empresa_id, 'descuento_porcentaje' => $request->descuento_porcentaje]);
+                return ['success'=>'true'];
+            } else {
+                DB::table('preferencias_envio')
+                ->where('empresa_id', $request->empresa_id)
+                ->update(['descuento_activo' => $request->descuento_activo, 'descuento_porcentaje' => $request->descuento_porcentaje]);
+                return ['success'=>'true'];
+            }
+        }
+
+        return ['success'=>'false'];
+    }
+
     public function get_preferencias_user()
     {
         $objeto = new \stdClass();
@@ -219,10 +243,14 @@ class configuracionController extends Controller
             $objeto->envio_gratuito = $registro->envio_gratuito;
             $objeto->monto_minimo_envio = $registro->monto_minimo_envio;
             $objeto->tarifa_envio = $registro->tarifa_envio;
+            $objeto->descuento_activo = $registro->descuento_activo;
+            $objeto->descuento_porcentaje = $registro->descuento_porcentaje;
         } else {
             $objeto->envio_gratuito = 0;
             $objeto->monto_minimo_envio = 0;
             $objeto->tarifa_envio = 0;
+            $objeto->descuento_activo = 0;
+            $objeto->descuento_porcentaje = 0;
         }
 
         return json_encode($objeto);

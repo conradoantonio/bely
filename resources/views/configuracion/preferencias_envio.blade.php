@@ -29,6 +29,7 @@ textarea {
             <li class="active"><a href="#tab1hellowWorld">Activar o desactivar envío gratuito</a></li>
             <li><a href="#tab1FollowUs">Monto mínimo para envío gratuito</a></li>
             <li><a href="#tab1Inspire">Tarifa de envío</a></li>
+            <li><a href="#tabPorcentajeDescuento">Porcentajes de descuento</a></li>
         </ul>
         <div class="tools"> <a href="javascript:;" class="collapse"></a> <a href="#grid-config" data-toggle="modal" class="config"></a> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
         <div class="tab-content">
@@ -69,6 +70,30 @@ textarea {
                         </p>
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane" id="tabPorcentajeDescuento">
+                <p>Marque la casilla de abajo para activar el porcentaje de descuento, y procure poner un número entre el 1 y 100.</p>
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12" style="padding-bottom: 20px;">
+                        <label for="activar_descuento">Activar</label>
+                        <div class="row-fluid">
+                            <div class="checkbox check-primary">
+                                <input id="activar_descuento" name="activar_descuento" {{$preferencias->descuento_activo == 1 ? 'checked' : ''}} type="checkbox">
+                                <label for="activar_descuento" style="padding-left:0px;"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="porcentaje_descuento">Porcentaje de descuento</label>
+                            <input type="text" class="form-control" id="porcentaje_descuento" value="{{$preferencias->descuento_porcentaje}}" maxlength="2" name="porcentaje_descuento" placeholder="Ej: 40">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="guardar_info_descuento">
+                    <i class="fa fa-spinner fa-spin" style="display: none"></i>
+                    Enviar
+                </button>
             </div>
         </div>
     </div>
@@ -149,5 +174,24 @@ $('body').delegate('button#tarifa_envio','click', function() {
         }
     });
 });
+
+$('body').delegate('button#guardar_info_descuento','click', function() {
+    porcentaje = $('#porcentaje_descuento').val();
+
+    if (!isNaN(porcentaje) && porcentaje != "") {//Es número
+        if (porcentaje < 100 && porcentaje > 0) {
+            activo = $('#activar_descuento').prop('checked') == true ? 1 : 0;
+            empresa = $('#token').attr('empresa-id');
+            token = $('#token').val();
+            console.log('debio mandarse');
+            cambiarPorcentajeDescuento(activo,empresa,porcentaje,token)        
+        } else {
+            swal("El porcentaje debe ser mayor a 0 y menor a 100.", 'Porfavor ingrese otra cantidad', 'error');
+        }
+    } else {
+        swal("Favor de ingresar sólo números.", 'Sólo ingrese un máximo', 'error');
+    }
+});
+
 </script>
 @endsection

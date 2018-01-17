@@ -76,6 +76,8 @@ Route::get('/configuracion/preferencias','configuracionController@preferencias_e
 Route::post('/configuracion/preferencias/activar_envio_gratuito','configuracionController@activar_envio_gratuito');//Activa o desactiva el envío gratuito.
 Route::post('/configuracion/preferencias/cambiar_monto_minimo','configuracionController@cambiar_monto_minimo');//Cambia el monto mínimo para el envío gratuito.
 Route::post('/configuracion/preferencias/cambiar_tarifa_envio','configuracionController@cambiar_tarifa_envio');//Cambia el monto de envío.
+Route::post('/configuracion/preferencias/cambiar_descuento_productos','configuracionController@cambiar_descuento_productos');//Activa o desactiva el porcentaje general de los productos.
+
 
 /*-- Rutas para la subpestaña de información empresa --*/
 Route::get('/configuracion/info_empresa','configuracionController@info_empresa');//Carga la vista para la información de la empresa.
