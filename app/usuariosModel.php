@@ -16,7 +16,7 @@ class usuariosModel extends Model
     /**
      * Define el nombre de los campos que podrán ser alterados de la tabla del modelo.
      */
-    protected $fillable = ['password', 'nombre', 'apellido', 'correo', 'tarjeta', 'fechaRegistro', 'foto_perfil', 'estado', 'genero_id', 'fechaNacimiento', 'telefono', 'celular', 'customer_id_conekta', 'status'];
+    protected $fillable = ['password', 'nombre', 'apellido', 'correo', 'tarjeta', 'fechaRegistro', 'foto_perfil', 'estado', 'genero_id', 'fechaNacimiento', 'telefono', 'celular', 'customer_id_conekta', 'player_id', 'status'];
 
     public static function buscar_usuario_por_correo($correo)
     {

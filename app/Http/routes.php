@@ -139,15 +139,4 @@ Route::group(['prefix' => 'notificaciones_app', 'middleware' => 'auth'], functio
 	Route::post('/enviar/individual','NotificacionesController@enviar_notificacion_individual');//Manda una notificación a los usuarios seleccionados de la áplicación.
 });
 
-Route::post('/app/webhook', function()
-{
-	header('HTTP/1.1 200 OK');
-	$body = @file_get_contents('php://input');
-	$event = json_decode($body);
-	$charge = $event->data->object;
-	
-	if ($data->type == 'charge.paid') {
-		$msg = "Tu pago ha sido comprobado.";
-		mail("anton_con@hotmail.com","Pago confirmado",$msg);
-	}
-});
+Route::post('/app/webhook','dataAppController@webhook_conekta');//Conekta Webhook

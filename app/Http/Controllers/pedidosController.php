@@ -31,12 +31,6 @@ class pedidosController extends Controller
             if (auth()->user()->empresa_id != 2) {//Si está logueado como usuario bely o cosmeticos & co
                 $title = "Pedidos";
                 $menu = "Pedidos";
-                $pedidos = Pedidos::all();
-                foreach ($pedidos as $pedido) {
-                    if ($pedido->status == "pending_payment" && $pedido->tipo_orden == "oxxo") {
-                        $this->checar_status_pedido($pedido->id ,$pedido->conekta_order_id);
-                    }
-                }
                 $pedidos = Pedidos::obtener_pedidos_pagados();//Se vuelven a solicitar los pedidos en caso de que se hayan actualizado el status de los pedidos de oxxo
                 return view('pedidos.pedidos', ['pedidos' => $pedidos, 'menu' => $menu, 'title' => $title]);
             } else {
@@ -52,7 +46,7 @@ class pedidosController extends Controller
      *
      * @return $pedido
      */
-    public function checar_status_pedido($id, $id_orden_conekta)
+    /*public function checar_status_pedido($id, $id_orden_conekta)
     {
         $orden_conekta = \Conekta\Order::find($id_orden_conekta);
         if ($orden_conekta->payment_status == 'paid') {//Se va a actualizar el pedido
@@ -74,7 +68,7 @@ class pedidosController extends Controller
 
             $pedido->save();
         }
-    }
+    }*/
 
     /**
      * Obtiene la información de un pedido en específico y su número de guía en caso de que tenga uno.

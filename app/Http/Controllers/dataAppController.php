@@ -21,7 +21,7 @@ use Auth;
 use Mail;
 
 require_once("conekta-php-master/lib/Conekta.php");
-\Conekta\Conekta::setApiKey("key_wsnGdPKAe4pyTFhCs84qVw");
+\Conekta\Conekta::setApiKey("key_riunxrzVmnYbTTMUjc4W4Q");
 \Conekta\Conekta::setApiVersion("2.0.0");
 
 class dataAppController extends Controller
@@ -420,6 +420,9 @@ class dataAppController extends Controller
      */
     public function crear_cliente(Request $request)
     {
+        if (!$this->verificar_compra_minima($request)) {
+            return ['msg' => 'La primera compra debe ser mayor a $3000 MXN'];
+        }
         $direccion = usuariosModel::direccion_usuario($request->direccion_id);
         if(!$direccion && $request->tipo_envio != 4) {//Si no hay una dirección de envío se cancela
             return ['msg' => 'No se agregó ninguna dirección de envío.'];
@@ -576,11 +579,14 @@ class dataAppController extends Controller
             $pedido->save();
 
             $this->cambiar_stock_productos($request->productos);
-            $this->enviar_correos_pedidos($request->empresa_id);
+            //$this->enviar_correos_pedidos($request->empresa_id);
             $this->guardar_pedido($pedido->id, $request->productos);
 
             if ($oxxo) {
-                //$this->enviar_num_referencia_correo($order->charges[0]->payment_method->reference, "$". $order->amount/100 . $order->currency);
+                $referencia = $order->charges[0]->payment_method->reference;
+                $total = $order->amount/100;
+                $moneda = $order->currency;
+                $this->enviar_correo_referencia_oxxo($referencia, $total, $moneda, $pedido->correo_cliente, $pedido);
                 return [
                     'msg' => 'Cargo oxxo solicitado', 
                     'num_referencia' => $order->charges[0]->payment_method->reference, 
@@ -601,6 +607,25 @@ class dataAppController extends Controller
             return ['msg' => 'Cargo no realizado: '.$msg_errors];
         }
     }//End function
+
+    /**
+     * Valida que el costo total de la compra sea de al menos 3000 si se trata de la primera compra del usuario.
+     *
+     * @param  $req
+     */
+    public function verificar_compra_minima($req)
+    {
+        $num_pedidos = Pedidos::where('correo_cliente', $req->correo)->count();
+        $total_productos = 0;
+        foreach ($req->productos as $producto) {
+            $total_productos += ($producto['unit_price'] * $producto['quantity']);
+        }
+
+        if ($num_pedidos == 0 && $total_productos < 300000) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Valida el costo de envío, si está activado o si el total de compra supera la tarífa mínima de envío.
@@ -1044,6 +1069,19 @@ class dataAppController extends Controller
     }
 
     /**
+     * Envía un correo con el número de referencia
+     * 
+     */
+    public function enviar_correo_referencia_oxxo($referencia, $total, $moneda, $correo_cliente, $pedido)
+    {
+        Mail::send('emails.oxxo', ['total' => $total, 'referencia' => $referencia, 'pedido' => $pedido], function ($message)  use ($correo_cliente)
+        {
+            $message->to($correo_cliente);
+            $message->subject('Bely | Número de referencia OXXO');
+        });
+    }
+
+    /**
      * Envía correos con los detalles de una cotización al correo de un usuario.
      * 
      */
@@ -1143,5 +1181,54 @@ class dataAppController extends Controller
 
         $response = curl_exec($ch);
         curl_close($ch);
+    }
+
+    public function webhook_conekta()
+    {
+        $body = @file_get_contents('php://input');
+        $data = json_decode($body);
+        http_response_code(200); // Return 200 OK
+
+        DB::table('rows')->insert([
+            'content' => json_encode($data),
+        ]);
+
+        $payment = $data->data->object->object;
+        $type = $data->type;
+
+        if ($data->data->object->object == "charge") {//Se verifica que sea un cargo.
+
+            if ($type == 'charge.paid') {//Se verifica que sea un cargo pagado
+                $order_id = $data->data->object->order_id;
+                Pedidos::where('conekta_order_id', $order_id)->update(['status' => 'paid']);
+                $servicio = Pedidos::where('conekta_order_id', $order_id)->first();
+                
+                if ($servicio) {
+                    if ($servicio->tipo_orden == 'oxxo') {//Se manda la notificación por onesignal
+                        $player_id [] = usuariosModel::where('correo', $servicio->correo_cliente)->first()->player_id;
+                        $titulo = '¡Pago por oxxo exitoso!';
+                        $mensaje = "Gracias por pagar en tiempo y forma su pedido solicitado por OXXO pay. Pronto se le asignará un número de guía para que pueda recibir satisfactoriamente su pedido.";
+                        $data = array('msg' => 'Pedido por OXXO pay pagado');
+                        
+                        //app('App\Http\Controllers\dataAppController')->enviar_notificacion_individual($titulo, $mensaje, $data, $player_id);
+                    }
+                    
+                    $to = $servicio->correo_cliente;
+                    $monto = $servicio->costo_total / 100;
+                    $nombre_cliente = $servicio->nombre_cliente;
+
+                    $subject = "Bely | Confirmación de pago";
+
+                    Mail::send('emails.pago_confirmado', ['nombre_cliente' => $nombre_cliente, 'monto' => $monto, 'pedido' => $servicio], function ($message)  use ($to, $subject)
+                    {
+                        $message->to($to);
+                        $message->subject($subject);
+                    });
+
+                    return response(['msg' => 'Notificado'], 200);
+                }//If para verificar que exista una orden con dicho order_id
+                return response(['msg' => 'Cargo pagado recibido'], 200);
+            }//If para verificar status del pago
+        }//If que verifica tipo de pago
     }
 }
