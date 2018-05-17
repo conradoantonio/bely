@@ -21,7 +21,7 @@ use Auth;
 use Mail;
 
 require_once("conekta-php-master/lib/Conekta.php");
-\Conekta\Conekta::setApiKey("key_riunxrzVmnYbTTMUjc4W4Q");
+\Conekta\Conekta::setApiKey("key_wsnGdPKAe4pyTFhCs84qVw");
 \Conekta\Conekta::setApiVersion("2.0.0");
 
 class dataAppController extends Controller
@@ -579,7 +579,7 @@ class dataAppController extends Controller
             $pedido->save();
 
             $this->cambiar_stock_productos($request->productos);
-            //$this->enviar_correos_pedidos($request->empresa_id);
+            $this->enviar_correos_pedidos($request->empresa_id);
             $this->guardar_pedido($pedido->id, $request->productos);
 
             if ($oxxo) {
@@ -1189,9 +1189,9 @@ class dataAppController extends Controller
         $data = json_decode($body);
         http_response_code(200); // Return 200 OK
 
-        DB::table('rows')->insert([
+        /*DB::table('rows')->insert([
             'content' => json_encode($data),
-        ]);
+        ]);*/
 
         $payment = $data->data->object->object;
         $type = $data->type;
