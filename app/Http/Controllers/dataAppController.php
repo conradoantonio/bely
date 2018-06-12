@@ -250,6 +250,15 @@ class dataAppController extends Controller
             ->where('producto.status', 1)
             ->orderBy('producto.nombre')
             ->get();
+
+            foreach ($productos as $value) {
+                if ($descuento->mostrar_timer) {
+                    $time_ofert = $descuento->dia_limite.' '.$descuento->hora_limite;
+                    if ($time_ofert > $this->actual_datetime) {
+                        $value->fecha_limite = $time_ofert;
+                    }
+                }
+            }
    
             $categoria->productos = $productos;
         }
@@ -291,6 +300,15 @@ class dataAppController extends Controller
             ->where('producto.status', 1)
             ->orderBy('empresa')
             ->get();
+
+            foreach ($productos as $value) {
+                if ($descuento->mostrar_timer) {
+                    $time_ofert = $descuento->dia_limite.' '.$descuento->hora_limite;
+                    if ($time_ofert > $this->actual_datetime) {
+                        $value->fecha_limite = $time_ofert;
+                    }
+                }
+            }
 
             $categoria->productos = $productos;
         }

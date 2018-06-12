@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v9.63 
-MySQL - 5.5.5-10.1.29-MariaDB : Database - bely
+MySQL - 5.5.5-10.1.31-MariaDB : Database - bely
 *********************************************************************
 */
 

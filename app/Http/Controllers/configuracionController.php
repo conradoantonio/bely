@@ -235,6 +235,30 @@ class configuracionController extends Controller
         return ['success'=>'false'];
     }
 
+    /**
+     * Configura una fecha y hora para los precios de productos
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function configurar_fecha_promocion(Request $request)
+    {
+        $registro = DB::table('preferencias_envio')->orderBy('id', 'desc')->where('empresa_id', $request->empresa_id)->first();
+        if (count($registro) == 0) {
+            DB::table('preferencias_envio')
+            ->insert(['mostrar_timer' => $request->mostrar_timer, 'empresa_id' => $request->empresa_id, 'dia_limite' => $request->dia, 'hora_limite' => $request->hora]);
+            return response(['msg' => 'Éxito guardando cambios', 'status' => 'ok'], 200);
+        } else {
+            DB::table('preferencias_envio')
+            ->where('empresa_id', $request->empresa_id)
+            ->update(['mostrar_timer' => $request->mostrar_timer, 'dia_limite' => $request->dia, 'hora_limite' => $request->hora]);
+            return response(['msg' => 'Éxito modificando cambios', 'status' => 'ok'], 200);
+        }
+
+        return response(['msg' => 'Ocurrió un problema', 'status' => 'error'], 200);
+    }
+
+    
+
     public function get_preferencias_user()
     {
         $objeto = new \stdClass();
@@ -245,12 +269,18 @@ class configuracionController extends Controller
             $objeto->tarifa_envio = $registro->tarifa_envio;
             $objeto->descuento_activo = $registro->descuento_activo;
             $objeto->descuento_porcentaje = $registro->descuento_porcentaje;
+            $objeto->mostrar_timer = $registro->mostrar_timer;
+            $objeto->dia_limite = $registro->dia_limite;
+            $objeto->hora_limite = $registro->hora_limite;
         } else {
             $objeto->envio_gratuito = 0;
             $objeto->monto_minimo_envio = 0;
             $objeto->tarifa_envio = 0;
             $objeto->descuento_activo = 0;
             $objeto->descuento_porcentaje = 0;
+            $objeto->mostrar_timer = 0;
+            $objeto->dia_limite = 0;
+            $objeto->hora_limite = 0;
         }
 
         return json_encode($objeto);
