@@ -210,7 +210,7 @@ input:-webkit-autofill {
                                                 <td>{{$producto->sku}}</td>
                                                 <td>{{$producto->nombre}}</td>
                                                 <td>{{$producto->precio}}</td>
-                                                <td><?php echo $producto->stock == '0' ? '<span class="label label-important">'.$producto->stock.'</span>' : '<span class="label label-info">'.$producto->stock.'</span>';?></td>
+                                                <td><?php echo $producto->stock <= 0 ? '<span class="label label-important">'.$producto->stock.'</span>' : '<span class="label label-info">'.$producto->stock.'</span>';?></td>
                                                 <td class="hide">{{$producto->descripcion}}</td>
                                                 <td class="hide">{{$producto->categoria_id}}</td>
                                                 <td class="hide">{{$producto->subcategoria_id}}</td>

@@ -132,6 +132,11 @@ Route::post('/app/enviar_correo_detalle_orden','dataAppController@enviar_correo_
 Route::post('/app/enviar_correo_detalle_cotizacion','dataAppController@enviar_correo_detalle_cotizacion');//Envía un correo electrónico con los detalles de la cotización.
 Route::post('/app/actualizar_player_id','dataAppController@actualizar_player_id');//Actualiza el player id de un usuario de la aplicación
 
+/*WS para los favoritos*/
+Route::post('/app/favoritos/listar','dataAppController@listar_favoritos');//Lista los favoritos de un usuario
+Route::post('/app/favoritos/guardar','dataAppController@guardar_favorito');//Guarda un favorito
+Route::post('/app/favoritos/eliminar','dataAppController@eliminar_favorito');//Elimina un favorito
+
 /*-- Rutas para las notificaciones --*/
 Route::group(['prefix' => 'notificaciones_app', 'middleware' => 'auth'], function () {
 	Route::get('/','NotificacionesController@index');//Carga el panel para mandar notificaciones a la aplicación.

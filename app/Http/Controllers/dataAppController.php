@@ -8,7 +8,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\usuariosModel;
 use App\direccionesUsuarioModel;
+use App\User;
 use App\Producto;
+use App\Favorito;
 use App\quienes_somosModel;
 use App\Pedidos;
 use App\PedidoDetalles;
@@ -120,6 +122,83 @@ class dataAppController extends Controller
         }
 
         return ['msg'=>'Sin actualizar'];
+    }
+
+    /**
+     * Guarda un producto como favorito
+     *
+     * @param  Request  $request
+     * @return response
+     */
+    public function guardar_favorito(Request $req) 
+    {
+        $exist = Favorito::not_repeat($req->user_id, $req->producto_id);
+        $user = User::find($req->user_id);
+        $producto = Producto::find($req->producto_id);
+
+        if (!$user) { return response(['msg' => 'ID de usuario inválido', 'status' => 'error'], 200); }
+        if (!$producto) { return response(['msg' => 'ID de producto inválido', 'status' => 'error'], 200); }
+        if (count($exist)) { return response(['msg' => 'No se puede agregar dos veces el mismo producto', 'status' => 'error'], 200); }
+
+        $fav = New Favorito;
+
+        $fav->user_id = $req->user_id;
+        $fav->producto_id = $req->producto_id;
+
+        $fav->save();
+
+        return response(['msg' => 'Se agregó un nuevo producto favorito', 'status' => 'ok'], 200);
+    }
+
+    /**
+     * Elimina un producto de favoritos
+     *
+     * @param  Request  $request
+     * @return response
+     */
+    public function eliminar_favorito(Request $req) 
+    {
+        $favs = Favorito::where('user_id', $req->user_id)
+        ->where('producto_id', $req->producto_id)
+        ->delete();
+
+        return response(['msg' => 'Producto eliminado', 'status' => 'ok'], 200);
+    }
+
+    /**
+     * Lista los productos favoritos de un usuario
+     *
+     * @param  Request  $request
+     * @return response
+     */
+    public function listar_favoritos(Request $req) 
+    {
+        $timer = null;
+        $opts = DB::table('preferencias_envio')->orderBy('id', 'desc')->where('empresa_id', 1)->first();
+
+        if ($opts->mostrar_timer) {
+            $timer = $opts->dia_limite.' '.$opts->hora_limite;
+        }
+        
+        //$select = $select.", ROUND((producto.precio) - ((producto.precio * $discount) /100), 2) AS precio_descuento";
+
+
+        $favs = Favorito::where('user_id', $req->user_id)
+        ->get();
+
+        if (count($favs)) {
+            foreach ($favs as $fav) {
+                $fav->producto;
+                if ($timer > $this->actual_datetime) {
+                    $fav->producto->timer = $timer;
+                }
+                if ($opts->descuento_activo == 1) {
+                    $fav->producto->precio_descuento = round(($fav->producto->precio) - (($fav->producto->precio * $opts->descuento_porcentaje) / 100), 2);
+                }
+            }
+            return response(['msg' => 'Productos favoritos encontrados', 'data' => $favs, 'status' => 'ok'], 200);
+        }
+        return response(['msg' => 'El usuario no cuenta con productos favoritos', 'status' => 'ok'], 200);
     }
 
     /**

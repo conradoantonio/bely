@@ -45,5 +45,6 @@ class VerifyCsrfToken extends BaseVerifier
         '/app/enviar_correo_detalle_cotizacion',
         '/app/actualizar_player_id',
         '/app/webhook',
+        '/app/*'
     ];
 }

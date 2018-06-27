@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v9.63 
-MySQL - 5.5.5-10.1.31-MariaDB : Database - bely
+MySQL - 5.5.5-10.1.32-MariaDB : Database - bely
 *********************************************************************
 */
 
@@ -124,6 +124,23 @@ CREATE TABLE `estado` (
 
 insert  into `estado`(`id`,`nombreEstado`,`created_at`,`updated_at`) values (1,'Aguascalientes','2017-02-04 18:45:43','2017-02-04 18:49:42'),(2,'Baja California',NULL,'2017-02-02 10:49:34'),(3,'Baja California Sur',NULL,NULL),(4,'Campeche',NULL,'2017-01-25 23:32:12'),(5,'Chiapas',NULL,NULL),(6,'Chihuahua',NULL,NULL),(7,'Coahuila',NULL,NULL),(8,'Colima',NULL,NULL),(9,'Distrito Federal',NULL,NULL),(10,'Durango',NULL,NULL),(11,'Estado de México',NULL,NULL),(12,'Guanajuato',NULL,NULL),(13,'Guerrero',NULL,'2017-01-25 23:32:35'),(14,'Hidalgo',NULL,NULL),(15,'Jalisco',NULL,'2017-01-25 23:32:31'),(16,'Michoacán',NULL,NULL),(17,'Morelos',NULL,NULL),(18,'Nayarit',NULL,NULL),(19,'Nuevo León',NULL,NULL),(20,'Oaxaca',NULL,NULL),(21,'Puebla',NULL,NULL),(22,'Querétaro',NULL,NULL),(23,'Quintana Roo',NULL,NULL),(24,'San Luis Potosí',NULL,NULL),(25,'Sinaloa',NULL,'2017-01-25 23:33:35'),(26,'Sonora',NULL,NULL),(27,'Tabasco',NULL,NULL),(28,'Tamaulipas',NULL,'2017-01-25 23:32:56'),(29,'Tlaxcala',NULL,NULL),(30,'Veracruz',NULL,NULL),(31,'Yucatán',NULL,NULL),(32,'Zacatecas',NULL,'2017-01-25 23:32:45');
 
+/*Table structure for table `favoritos` */
+
+DROP TABLE IF EXISTS `favoritos`;
+
+CREATE TABLE `favoritos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+/*Data for the table `favoritos` */
+
+insert  into `favoritos`(`id`,`user_id`,`producto_id`,`created_at`,`updated_at`) values (3,2,43,'2018-06-26 17:36:50','2018-06-26 17:36:50'),(4,2,42,'2018-06-26 17:37:14','2018-06-26 17:37:14');
+
 /*Table structure for table `genero` */
 
 DROP TABLE IF EXISTS `genero`;
@@ -230,13 +247,16 @@ CREATE TABLE `preferencias_envio` (
   `tarifa_envio` decimal(10,2) NOT NULL DEFAULT '0.00',
   `descuento_activo` tinyint(4) DEFAULT '0' COMMENT 'Activa o desactiva el envío gratuito',
   `descuento_porcentaje` int(11) DEFAULT '1',
+  `mostrar_timer` int(11) DEFAULT '0',
+  `dia_limite` date DEFAULT NULL COMMENT 'La hora final a la que se respetará el descuento',
+  `hora_limite` time DEFAULT NULL,
   `empresa_id` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 /*Data for the table `preferencias_envio` */
 
-insert  into `preferencias_envio`(`id`,`envio_gratuito`,`monto_minimo_envio`,`tarifa_envio`,`descuento_activo`,`descuento_porcentaje`,`empresa_id`) values (5,0,'5000.00','150.00',1,10,1),(6,0,'0.00','0.00',NULL,NULL,2),(7,0,'0.00','150.00',NULL,NULL,3);
+insert  into `preferencias_envio`(`id`,`envio_gratuito`,`monto_minimo_envio`,`tarifa_envio`,`descuento_activo`,`descuento_porcentaje`,`mostrar_timer`,`dia_limite`,`hora_limite`,`empresa_id`) values (5,0,'5000.00','150.00',1,10,0,NULL,NULL,1),(6,0,'0.00','0.00',NULL,NULL,0,NULL,NULL,2),(7,0,'0.00','150.00',NULL,NULL,0,NULL,NULL,3);
 
 /*Table structure for table `preguntas_frecuentes` */
 

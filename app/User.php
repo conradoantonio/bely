@@ -36,4 +36,13 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * Obtiene los productos favoritos del cliente.
+     *
+     */
+    public function favoritos()
+    {
+        return $this->hasMany(Favorito::class, 'user_id', 'id');
+    }
 }
