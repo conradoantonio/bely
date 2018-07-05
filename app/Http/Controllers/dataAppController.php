@@ -133,7 +133,7 @@ class dataAppController extends Controller
     public function guardar_favorito(Request $req) 
     {
         $exist = Favorito::not_repeat($req->user_id, $req->producto_id);
-        $user = User::find($req->user_id);
+        $user = usuariosModel::find($req->user_id);
         $producto = Producto::find($req->producto_id);
 
         if (!$user) { return response(['msg' => 'ID de usuario inválido', 'status' => 'error'], 200); }
