@@ -82,7 +82,7 @@
 <body>
     <div class='header1'>
 		{{-- <div>
-			<img src='https://www.navidad.belyapp.com/img/header_mail.png' style='width: 100%;'>
+			<img src="{{asset('img/header_mail.png')}}" style='width: 100%;'>
 		</div> --}}
 	</div>
 	<div id="recibo" style="margin:auto;">

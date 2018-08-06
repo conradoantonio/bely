@@ -82,7 +82,7 @@
 <body>
     <div class='header1'>
 		{{-- <div>
-			<img src='https://www.navidad.belyapp.com/img/header_mail.png' style='width: 100%;'>
+			<img src="{{asset('img/header_mail.png')}}" style='width: 100%;'>
 		</div> --}}
 	</div>
 	<div id="recibo" style="margin:auto;">
@@ -92,7 +92,7 @@
 		<div class="recibo_body" style="width: 75%;margin: auto;border: 1px solid black;border-radius: 0px 0px 5px 5px;padding-bottom: 15px;">
 			<div>
 				<div class="col-6 center" style="text-align: center;width: 49%;display: inline-block;">
-					<img src="https://www.navidad.belyapp.com/img/logo_oxxo.png" width="40%">
+					<img src="{{asset('img/logo_oxxo.png')}}" width="40%">
 				</div>
 				<div class="col-6" style="width: 49%;display: inline-block;">
 					<div class="upper" style="text-transform: uppercase;">
