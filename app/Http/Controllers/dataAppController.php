@@ -52,7 +52,7 @@ class dataAppController extends Controller
             $usuario_app->estado = $request->has('estado') ? $request->estado : '';
             $usuario_app->genero_id = $request->has('genero_id') ? $request->genero_id : 0;
             $usuario_app->fechaNacimiento = $request->fechaNacimiento;
-            $usuario_app->status = 2;
+            $usuario_app->status = 1;
 
             $usuario_app->save();
 
