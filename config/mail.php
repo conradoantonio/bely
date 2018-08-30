@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'soporte@belyapp.com', 'name' => 'Bely app'],
+    'from' => ['address' => 'support@belyapp.com', 'name' => 'Bely app'],
 
     /*
     |--------------------------------------------------------------------------
