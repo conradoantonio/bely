@@ -564,7 +564,7 @@ class dataAppController extends Controller
                         ),//payment_sources
                         'shipping_contacts' => array(array(
                             'phone' => $request->telefono,
-                            'receiver' => $request->tipo_envio != 4 ? $direccion['recibidor'] : "Belyapp Joyería",
+                            'receiver' => "Belyapp Joyería",
                             'address' => array(
                                 'street1' => $request->tipo_envio != 4 ? $direccion_num : "Paseo Hospicio #22 San Juan de Dios",
                                 'city' => $request->tipo_envio != 4 ? $direccion['ciudad'] : "Guadalajara",
@@ -629,7 +629,7 @@ class dataAppController extends Controller
                     ), //customer_info
                     "shipping_contact" => array(
                         "phone" => $request->telefono,
-                        "receiver" => $request->tipo_envio != 4 ? $direccion['recibidor'] : "Belyapp Joyería",
+                        'receiver' => "Belyapp Joyería",
                         "address" => array(
                             'street1' => $request->tipo_envio != 4 ? $direccion_num : "Paseo Hospicio #22 San Juan de Dios",
                             'city' => $request->tipo_envio != 4 ? $direccion['ciudad'] : "Guadalajara",
@@ -954,7 +954,7 @@ class dataAppController extends Controller
                         "phone" => $request->telefono,
                         'shipping_contacts' => array(array(
                             'phone' => $request->telefono,
-                            'receiver' => $request->tipo_envio != 4 ? $direccion['recibidor'] : "Belyapp Joyería",  
+                            'receiver' => "Belyapp Joyería",
                             'address' => array(
                                 'street1' => $request->tipo_envio != 4 ? $direccion_num : "Paseo Hospicio #22 San Juan de Dios",
                                 'city' => $request->tipo_envio != 4 ? $direccion['ciudad'] : "Guadalajara",
